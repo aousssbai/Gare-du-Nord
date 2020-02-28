@@ -24,7 +24,7 @@ try:
     while amount_received < amount_expected:
         data = sock.recv(16)
         amount_received += len(data)
-        print('received ' + data)
+        print('received ' + str(data))
 
 finally:
     print('closing socket')
