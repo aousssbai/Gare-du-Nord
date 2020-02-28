@@ -23,7 +23,7 @@ while True:
 
         # Receive the data in small chunks and retransmit it
         while True:
-            data = connection.recv(16)
+            data = connection.recv(1024)
             print(f'received {data}')
             if data:
                 print('sending data back to the client')
