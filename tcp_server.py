@@ -24,8 +24,8 @@ while True:
         # Receive the data in small chunks and retransmit it
         while True:
             data = connection.recv(1024)
-            print(f'received {data}')
             if data:
+                print(f'received {data}')
                 print('sending data back to the client')
                 connection.sendall(data)
             else:
