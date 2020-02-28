@@ -29,7 +29,7 @@ while True:
                 print('sending data back to the client')
                 connection.sendall(data)
             else:
-                print('no more data from {client_address}')
+                print('no more data from' + str(client_address))
                 break
         
     finally:
