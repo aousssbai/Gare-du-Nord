@@ -32,8 +32,21 @@ from scapy.all import *
 # finally:
 #     print('closing socket')
 #     sock.close()
-s=socket.socket()
-s.connect(("127.0.0.1",10000))
-ss=StreamSocket(s,Raw)
-p = IP(dst="127.0.0.1")/TCP(flags="S", sport=RandShort(),dport=10000)/Raw("Hallo world!")
-ss.sr1(Raw(p))
+# s=socket.socket()
+# s.connect(("127.0.0.1",10000))
+# ss=StreamSocket(s,Raw)
+# p = IP(dst="127.0.0.1")/TCP(flags="S", sport=RandShort(),dport=10000)/Raw("Hallo world!")
+# ss.sr1(Raw(p))
+from scapy.all import *
+
+sport = random.randint(1024,65535)
+
+# SYN
+ip=IP(src="127.0.0.1",dst="127.0.0.1")
+SYN=TCP(sport=sport,dport=255,flags='S',seq=1000)
+SYNACK=sr1(ip/SYN)
+
+# SYN-ACK
+ACK=TCP(sport=sport, dport=255, flags='A', seq=SYNACK.ack + 1, ack=SYNACK.seq + 1)
+send(ip/ACK)
+
