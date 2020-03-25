@@ -49,11 +49,13 @@ def main():
     topo = BasicTopo()
     net = Mininet(topo=topo, link=TCLink)
     # Mininet.staticArp(net)
-    # 
     net.start()
     h1, h2, h3, s1 = net.get('h1', 'h2', 'h3', 's1')
     start_tcp_server(h1)
     perform_get(h2)
+    # Make sure all messages are received by h3
+    s1.cmd("ovs-ofctl add-flow s1 in_port=1,actions=flood")
+    s1.cmd("ovs-ofctl add-flow s1 in_port=2,actions=flood")
     # Open cli in case we want to do additional debugging
     CLI(net)
     net.stop()
