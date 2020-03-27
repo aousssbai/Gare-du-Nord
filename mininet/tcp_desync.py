@@ -30,6 +30,18 @@ class BasicTopo( Topo ):
         self.addLink(host3, switch)
 
 
+def stop_telnet(host):
+    print("Stopping telnet")
+    host.cmd('sudo /etc/init.d/xinetd stop')
+
+
+def start_telnet(host):
+    stop_telnet(host)
+    print("Starting telnet on host %s..." % host)
+    host.cmd('sudo /etc/init.d/xinetd start')
+    print("Telnet started, use 'telnet %s' to connect" % host.IP())
+
+
 def start_tcp_server(host):
     print("Starting a TCP server on host %s..." % host)
     # Run an http server in the background
@@ -51,13 +63,15 @@ def main():
     # Mininet.staticArp(net)
     net.start()
     h1, h2, h3, s1 = net.get('h1', 'h2', 'h3', 's1')
-    start_tcp_server(h1)
-    perform_get(h2)
+    # start_tcp_server(h1)
+    # perform_get(h2)
+    start_telnet(h1)
     # Make sure all messages are received by h3
     s1.cmd("ovs-ofctl add-flow s1 in_port=1,actions=flood")
     s1.cmd("ovs-ofctl add-flow s1 in_port=2,actions=flood")
     # Open cli in case we want to do additional debugging
     CLI(net)
+    stop_telnet(h1)
     net.stop()
 
 if __name__ == "__main__":
