@@ -34,7 +34,9 @@ class BasicTopo( Topo ):
 # You can view this file with "wireshark filename"
 def start_tcpdump(host):
     print("Starting tcpdump on host %s interface %s" % (host, host.defaultIntf()))
-    host.cmd("tcpdump -vv -i %s -w %sdump.pcap &" % (host.defaultIntf(), host))
+    command = "tcpdump -vv -i %s -w %sdump.pcap &" % (host.defaultIntf(), host)
+    print(command)
+    host.cmd(command)
 
 
 def stop_telnet(host):
