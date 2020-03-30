@@ -30,6 +30,13 @@ class BasicTopo( Topo ):
         self.addLink(host3, switch)
 
 
+# Print all seen traffic from a host to a file
+# You can view this file with "wireshark filename"
+def start_tcpdump(host):
+    print("Starting tcpdump on host %s interface %s" % (host, host.defaultIntf()))
+    host.cmd("tcpdump -vv -i %s -w %sdump.pcap &" % (host.defaultIntf(), host))
+
+
 def stop_telnet(host):
     print("Stopping telnet")
     host.cmd('sudo /etc/init.d/xinetd stop')
@@ -40,6 +47,11 @@ def start_telnet(host):
     print("Starting telnet on host %s..." % host)
     host.cmd('sudo /etc/init.d/xinetd start')
     print("Telnet started, use 'telnet %s' to connect" % host.IP())
+
+
+def start_attacker(host):
+    print("Starting attacker script on %s" % host)
+    host.cmd("sudo python attack.py &")
 
 
 def start_tcp_server(host):
@@ -65,6 +77,8 @@ def main():
     h1, h2, h3, s1 = net.get('h1', 'h2', 'h3', 's1')
     # start_tcp_server(h1)
     # perform_get(h2)
+    start_tcpdump(h3)
+    # start_attacker(h3)
     start_telnet(h1)
     # Make sure all messages are received by h3
     s1.cmd("ovs-ofctl add-flow s1 in_port=1,actions=flood")
