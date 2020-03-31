@@ -25,7 +25,7 @@ class BasicTopo( Topo ):
         self.addLink(host1, switch)
         # The legitimate client
         # Delay simulates the fact that h3 can get their packets in before h2
-        self.addLink(host2, switch, delay='20ms')
+        self.addLink(host2, switch, delay='100ms')
         # The attacker trying to desynchronise the connection
         self.addLink(host3, switch)
 
@@ -35,7 +35,6 @@ class BasicTopo( Topo ):
 def start_tcpdump(host):
     print("Starting tcpdump on host %s interface %s" % (host, host.defaultIntf()))
     command = "tcpdump -vv -i %s -w %sdump.pcap &" % (host.defaultIntf(), host)
-    print(command)
     host.cmd(command)
 
 
@@ -49,6 +48,7 @@ def start_telnet(host):
     print("Starting telnet on host %s..." % host)
     host.cmd('sudo /etc/init.d/xinetd start')
     print("Telnet started, use 'telnet %s' to connect" % host.IP())
+    print("When running from the mininet cli run 'h2 telnet h1'")
 
 
 def start_attacker(host):
@@ -80,7 +80,8 @@ def main():
     # start_tcp_server(h1)
     # perform_get(h2)
     start_tcpdump(h3)
-    # start_attacker(h3)
+    start_tcpdump(h1)
+    start_attacker(h3)
     start_telnet(h1)
     # Make sure all messages are received by h3
     s1.cmd("ovs-ofctl add-flow s1 in_port=1,actions=flood")
